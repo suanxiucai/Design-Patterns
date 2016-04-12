@@ -1,0 +1,92 @@
+Strategy(抽象策略类)：定义了一个公共接口，各种不同的算法以不同的方式实现这个接口
+Context使用这个接口调用不同的算法，一般使用接口或抽象类实现。
+ConcreteStrategy(具体策略类)：实现了Strategy定义的接口，提供具体的算法实现。
+
+优点：
+1，策略模式提供了管理相关的算法族的办法。策略类的等级结构定义了一个算法或行为族。恰当使用继承可以把公共的代码移到父类里面，
+   从而避免代码重复。
+2，使用策略模式可以避免使用多重条件(if-else)语句。多重条件语句不易维护，它把采取哪一种算法或采取哪一种行为的逻辑与算法或行为的
+   逻辑混合在一起，统统列在一个多重条件语句里面，比使用继承的办法还要原始和落后。
+缺点：
+1，客户端必须知道所有的策略类，并自行决定使用哪一个策略类。这就意味着客户端必须理解这些算法的区别，以便适时选择恰当的算法类。
+   换言之，策略模式只适用于客户端知道算法或行为的情况。
+2，由于策略模式把每个具体的策略实现都单独封装成为类，如果备选的策略很多的话，那么对象的数目就会很可观。
+
+这里用CS里的人物作为例子，每个人都可以有几个武器，武器之间动态切换，武器拥有统一的攻击命令
+
+参考：http://blog.csdn.net/lcl_data/article/details/10255125
+
+
+
+
+
+#include<iostream>
+using namespace std;
+
+class WeponBehavior {
+public:
+	void virtual useWeapon() = 0;
+};
+
+class AK47 :public WeponBehavior {
+public:
+	void useWeapon() {
+		cout << "Using AK47" << endl;
+	}
+};
+
+class Knife :public WeponBehavior {
+public:
+	void useWeapon() {
+		cout << "Using Knife" << endl;
+	}
+};
+
+class Charater {
+public:
+	Charater() {
+		weapon = nullptr;
+	}
+	void setWeapon(WeponBehavior *w) {
+		weapon = w;
+	}
+	void virtual fight() = 0;
+protected:
+	WeponBehavior *weapon;
+};
+
+class king :public Charater {
+public:
+	void fight() {
+		cout << "This is a king  ";
+		if (weapon == nullptr)
+			cout << "You don't have a weapon,Set Weapon!" << endl;
+		else
+			weapon->useWeapon();
+	}
+};
+
+int main() {
+	WeponBehavior *ak47 = new AK47;
+	WeponBehavior *knife = new Knife;
+
+	Charater *k = new king;
+
+	k->fight();
+	cout << endl;
+
+	k->setWeapon(ak47);
+	k->fight();
+	cout << endl;
+
+	k->setWeapon(knife);
+	k->fight();
+	cout << endl;
+
+	return 0;
+}
+
+
+
+
+
